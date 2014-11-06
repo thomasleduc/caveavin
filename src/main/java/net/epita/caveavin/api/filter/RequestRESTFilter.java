@@ -38,19 +38,12 @@ public class RequestRESTFilter implements ContainerRequestFilter {
 
         // Then check is the service key exists and is valid.
         Authenticator authenticator = Authenticator.getInstance();
-        String serviceKey = requestCtx.getHeaderString(CaveStrings.SERVICE_KEY);
 
-        if (!authenticator.isServiceKeyValid(serviceKey)) {
-            // Vomit on anyone who dare try to access
-            // to our web service without a valid service Key
-            requestCtx.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
-            return;
-        }
         // For any other methods besides login, the authToken must be verified
-        if (!path.startsWith("/caveavin/api/session")) {
+        if (!path.startsWith("/session")) {
             String authToken = requestCtx.getHeaderString(CaveStrings.AUTH_TOKEN);
             // if it isn't valid, just kick them out.
-            if (!authenticator.isAuthTokenValid(serviceKey, authToken)) {
+            if (!authenticator.isAuthTokenValid(authToken)) {
                 requestCtx.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
         }

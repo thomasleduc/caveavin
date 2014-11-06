@@ -26,10 +26,9 @@ public class SessionRESTService extends AbstractRESTService {
             @FormParam("password") String password) {
 
         Authenticator authenticator = Authenticator.getInstance();
-        String serviceKey = httpHeaders.getHeaderString(CaveStrings.SERVICE_KEY);
 
         try {
-            String authToken = authenticator.login(serviceKey, username, password);
+            String authToken = authenticator.login(username, password);
             JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
             jsonObjBuilder.add(CaveStrings.AUTH_TOKEN, authToken);
             JsonObject jsonObj = jsonObjBuilder.build();
@@ -48,9 +47,9 @@ public class SessionRESTService extends AbstractRESTService {
     @Path("test-get-method")
     @Produces(MediaType.APPLICATION_JSON)
     public Response demoGetMethod() {
-        JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
-        jsonObjBuilder.add("message", "Executed demoGetMethod");
-        JsonObject jsonObj = jsonObjBuilder.build();
+        JsonObject jsonObj = Json.createObjectBuilder()
+                .add("message", "Executed demoGetMethod")
+                .build();
 
         return getNoCacheResponseBuilder(Response.Status.OK).entity(jsonObj.toString()).build();
     }
@@ -59,10 +58,9 @@ public class SessionRESTService extends AbstractRESTService {
     @Path("test-post-method")
     @Produces(MediaType.APPLICATION_JSON)
     public Response demoPostMethod() {
-        JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
-        jsonObjBuilder.add("message", "Executed demoPostMethod");
-        JsonObject jsonObj = jsonObjBuilder.build();
-
+        JsonObject jsonObj = Json.createObjectBuilder()
+                .add("message", "Executed demoPostMethod")
+                .build();
         return getNoCacheResponseBuilder(Response.Status.ACCEPTED).entity(jsonObj.toString()).build();
     }
 
@@ -73,10 +71,8 @@ public class SessionRESTService extends AbstractRESTService {
             @Context HttpHeaders httpHeaders) {
         try {
             Authenticator authenticator = Authenticator.getInstance();
-            String serviceKey = httpHeaders.getHeaderString(CaveStrings.SERVICE_KEY);
             String authToken = httpHeaders.getHeaderString(CaveStrings.AUTH_TOKEN);
-
-            authenticator.logout(serviceKey, authToken);
+            authenticator.logout(authToken);
 
             return getNoCacheResponseBuilder(Response.Status.NO_CONTENT).build();
         } catch (final GeneralSecurityException ex) {

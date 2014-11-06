@@ -25,7 +25,7 @@ public class ResponseRESTFilter implements ContainerResponseFilter {
         responseCtx.getHeaders().add("Access-Control-Allow-Origin", "*");
         responseCtx.getHeaders().add("Access-Control-Allow-Credentials", "true");
         responseCtx.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
-        responseCtx.getHeaders().add("Access-Control-Allow-Headers", CaveStrings.SERVICE_KEY + ", " + CaveStrings.AUTH_TOKEN);
+        responseCtx.getHeaders().add("Access-Control-Allow-Headers", CaveStrings.AUTH_TOKEN);
         responseCtx.getHeaders().putSingle("X-Powered-By", "EPITADMS.");
     }
 }
