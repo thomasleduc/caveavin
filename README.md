@@ -16,10 +16,12 @@ unzip wildfly-8.1.0.Final.zip
 export WILDFLY_HOME=$FAVDIR/wildfly-8.1.0.Final
 ```
 
-IntelliJ
-On Start up wizard, go to ...
-Open the project, wait for maven resolving ...
-Go to "Run/Debug Configuration" and ..
+####IntelliJ####
+   - On Start up wizard, go to Configure, then Plugins, and search for Jbos integration. Make sure the plugins is enable.
+   - Back to the start up wizard, go to preferences -> applications servers -> Add WildFly
+   - Now you can git clone the project, open it and wait for maven resolving ...
+   - Go to "Run/Debug Configuration", select the default domain, click fix (add the war to the build)
+   - (Troubleshooting) if you have a problem after this step, it's probably because intelliJ language support configuration is low.
 
 ### MySQL ###
 (Assuming you have a mysql server already running on port 3306)
@@ -76,12 +78,13 @@ exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLEx
 ## Webservices : ##
 
 ### Public : ###
-
+```
 /session/login              POST username password          -> auth_token
 /public/stats               GET                             -> nb_cellar nb_bottle
 /session/register           POST username password email    -> auth_token
-
+```
 ## Authorized : ###
+```
 /session/logout             POST                            -> OK
 /session/password           UPDATE password new_password    -> OK
 /session/email              UPDATE email new_email          -> OK
@@ -100,3 +103,4 @@ exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLEx
 /cellar                     DELETE                          -> OK
 /cellar/{id}                UPDATE                          -> OK
 /cellar/{id}/history        GET                             -> Cellar {Bottles drunk}
+```
