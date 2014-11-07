@@ -41,8 +41,6 @@ public class SessionRESTService extends AbstractRESTService {
         }
     }
 
-
-
     @GET
     @Path("test-get-method")
     @Produces(MediaType.APPLICATION_JSON)
@@ -78,14 +76,6 @@ public class SessionRESTService extends AbstractRESTService {
         } catch (final GeneralSecurityException ex) {
             return getNoCacheResponseBuilder(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    private Response.ResponseBuilder getNoCacheResponseBuilder(Response.Status status) {
-        CacheControl cc = new CacheControl();
-        cc.setNoCache(true);
-        cc.setMaxAge(-1);
-        cc.setMustRevalidate(true);
-        return Response.status(status).cacheControl(cc);
     }
 }
 
