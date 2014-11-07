@@ -1,8 +1,8 @@
-### Cave à vin ###
+# Cave à vin #
 
 ## Installation ##
 
-# Wildfly #
+### Wildfly ###
 
 Get the source
 ```bash
@@ -21,7 +21,7 @@ On Start up wizard, go to ...
 Open the project, wait for maven resolving ...
 Go to "Run/Debug Configuration" and ..
 
-# MySQL #
+### MySQL ###
 (Assuming you have a mysql server already running on port 3306)
 
 Make Mysql available for JBoss
@@ -64,23 +64,24 @@ IDENTIFIED BY 'chatEo9dupape' WITH GRANT OPTION;
 ```
 
 again with the command line admin tools
-
+```
 /subsystem=datasources/data-source=CavDS:add(driver-name=mysql, user-name=caveavin, password=chatEo9dupape, \
 connection-url=jdbc:mysql://localhost:3306/caveavin, min-pool-size=5, \
 max-pool-size=15, jndi-name=java:/jdbc/CavDS, enabled=true, validate-on-match=true, \
 valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker, \
 exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter)
-
+```
 
 
 ## Webservices : ##
 
-# Public : #
+### Public : ###
+
 /session/login              POST username password          -> auth_token
 /public/stats               GET                             -> nb_cellar nb_bottle
 /session/register           POST username password email    -> auth_token
 
-# Authorized : #
+## Authorized : ###
 /session/logout             POST                            -> OK
 /session/password           UPDATE password new_password    -> OK
 /session/email              UPDATE email new_email          -> OK
