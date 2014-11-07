@@ -57,11 +57,11 @@ The result should be : {"outcome" => "success"}
 Create your mysql base :
 ```SQL
 -- Create a new Database
-CREATE DATABASE caveavin;
+CREATE DATABASE  IF NOT EXISTS caveavin 
 
 -- Create a MySQL User with all right on the database
-GRANT ALL PRIVILEGES ON caveavin.* TO 'caveavin'@'localhost'
-IDENTIFIED BY 'chatEo9dupape' WITH GRANT OPTION;
+CREATE USER 'caveavin'@'localhost' IDENTIFIED BY 'chatEo9dupape';
+GRANT ALL PRIVILEGES ON caveavin.* TO 'caveavin'@'localhost';
 --
 ```
 

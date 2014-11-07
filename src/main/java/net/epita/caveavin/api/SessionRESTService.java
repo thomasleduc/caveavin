@@ -11,9 +11,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.security.GeneralSecurityException;
 
-/**
- * Created by teboul_g
- */
 @Path("/session")
 public class SessionRESTService extends AbstractRESTService {
 
@@ -35,7 +32,7 @@ public class SessionRESTService extends AbstractRESTService {
             return getNoCacheResponseBuilder(Response.Status.OK).entity(jsonObj.toString()).build();
         } catch (final LoginException ex) {
             JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
-            jsonObjBuilder.add("message", "Problem matching service key, username and password");
+            jsonObjBuilder.add("message", "Bad username and/or password format");
             JsonObject jsonObj = jsonObjBuilder.build();
             return getNoCacheResponseBuilder(Response.Status.UNAUTHORIZED).entity(jsonObj.toString()).build();
         }
@@ -46,7 +43,7 @@ public class SessionRESTService extends AbstractRESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response demoGetMethod() {
         JsonObject jsonObj = Json.createObjectBuilder()
-                .add("message", "Executed demoGetMethod")
+                .add("message", "Executed testGetMethod")
                 .build();
 
         return getNoCacheResponseBuilder(Response.Status.OK).entity(jsonObj.toString()).build();
@@ -57,7 +54,7 @@ public class SessionRESTService extends AbstractRESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response demoPostMethod() {
         JsonObject jsonObj = Json.createObjectBuilder()
-                .add("message", "Executed demoPostMethod")
+                .add("message", "Executed testPostMethod")
                 .build();
         return getNoCacheResponseBuilder(Response.Status.ACCEPTED).entity(jsonObj.toString()).build();
     }
@@ -67,6 +64,25 @@ public class SessionRESTService extends AbstractRESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(
             @Context HttpHeaders httpHeaders) {
+        try {
+            Authenticator authenticator = Authenticator.getInstance();
+            String authToken = httpHeaders.getHeaderString(CaveStrings.AUTH_TOKEN);
+            authenticator.logout(authToken);
+
+            return getNoCacheResponseBuilder(Response.Status.NO_CONTENT).build();
+        } catch (final GeneralSecurityException ex) {
+            return getNoCacheResponseBuilder(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("register")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response register(
+            @Context HttpHeaders httpHeaders,
+            @FormParam("username") String username,
+            @FormParam("password") String password,
+            @FormParam("email") String email) {
         try {
             Authenticator authenticator = Authenticator.getInstance();
             String authToken = httpHeaders.getHeaderString(CaveStrings.AUTH_TOKEN);

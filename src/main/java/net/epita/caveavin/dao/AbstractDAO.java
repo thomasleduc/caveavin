@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import java.util.Collection;
 
@@ -65,9 +66,35 @@ public abstract class AbstractDAO
      * @param entity The entity to push.
      */
     public void persist(final T entity) {
-        EntityManager eM = getEntityManager();
-        eM.getTransaction().begin();
-        eM.persist(entity);
-        eM.getTransaction().commit();
+        em.getTransaction().begin();
+        em.persist(entity);
+        em.getTransaction().commit();
+    }
+
+    public Long count() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+
+        Root<T> rootEntry = cq.from(getEntityClass());
+        CriteriaQuery<Long> countQ = cq.select(cb.count(rootEntry));
+
+        return em.createQuery(countQ).getSingleResult();
+    }
+
+    /**
+     * @param key The sql key of the unique constrain
+     * @return The entity associate entity
+     */
+    public T findUnique(String key, String value) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<T> q = cb.createQuery(getEntityClass());
+
+        Root<T> c = q.from(getEntityClass());
+        q.select(c);
+
+        ParameterExpression<String> name = cb.parameter(String.class, key);
+        q.where(cb.equal(c.get(key), name));
+
+        return getEntityManager().createQuery(q).setParameter(key, value).getSingleResult();
     }
 }

@@ -1,9 +1,13 @@
 package net.epita.caveavin.tools;
 
+import net.epita.caveavin.biz.UserBIZ;
+import net.epita.caveavin.tools.exception.RegisterFailedException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.security.GeneralSecurityException;
+import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 
 /**
@@ -11,16 +15,14 @@ import javax.security.auth.login.LoginException;
  */
 public final class Authenticator {
     private static Authenticator authenticator = null;
-    // A user storage which stores <username, password>
-    private final Map<String, String> usersStorage = new HashMap<>();
     // An authentication token storage which stores <auth_token, username>.
     private final Map<String, String> authorizationTokensStorage = new HashMap<>();
 
+    @Inject
+    private UserBIZ userBIZ;
+
     private Authenticator() {
-        // The usersStorage pretty much represents a user table in the database
-        usersStorage.put("username1", "passwordForUser1");
-        usersStorage.put("username2", "passwordForUser2");
-        usersStorage.put("username3", "passwordForUser3");
+        // init the singleton here
     }
 
     public static Authenticator getInstance() {
@@ -31,22 +33,24 @@ public final class Authenticator {
     }
 
     public String login(String username, String password) throws LoginException {
-        if (usersStorage.containsKey(username)) {
-            String passwordMatch = usersStorage.get(username);
-            if (passwordMatch.equals(password)) {
-                /**
-                 * Once all params are matched, the authToken will be
-                 * generated and will be stored in the
-                 * authorizationTokensStorage. The authToken will be needed
-                 * for every REST API invocation and is only valid within
-                 * the login session
-                 **/
+
+        if (userBIZ.login(username, password)) {
                 String authToken = UUID.randomUUID().toString();
                 authorizationTokensStorage.put(authToken, username);
                 return authToken;
-            }
         }
         throw new LoginException("Sorry man, you don't exist");
+    }
+
+    /**
+     * Check the parameter to registration, save the user and do a login
+     **/
+    public String register(String username, String password, String email) throws RegisterFailedException {
+        userBIZ.register(username, password, email); // possible throw of registerFailedException
+
+        String authToken = UUID.randomUUID().toString();
+        authorizationTokensStorage.put(authToken, username);
+        return authToken;
     }
 
     /**

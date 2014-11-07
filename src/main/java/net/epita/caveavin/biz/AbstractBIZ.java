@@ -2,7 +2,6 @@ package net.epita.caveavin.biz;
 
 import net.epita.caveavin.dao.AbstractDAO;
 import net.epita.caveavin.dbo.AbstractDBO;
-import net.epita.caveavin.dbo.User;
 
 import java.util.Collection;
 
@@ -48,6 +47,10 @@ public abstract class AbstractBIZ
      */
     public void persist(final T entity) {
         getDAO().persist(entity);
+    }
+
+    public Long count() {
+        return getDAO().count();
     }
 
 }

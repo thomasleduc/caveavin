@@ -17,7 +17,11 @@ import javax.inject.Named;
 public class BottleBIZ extends AbstractBIZ<BottleDAO, Bottle, Long> {
 
     @Inject
-    @Getter
-    private BottleDAO DAO;
+    private BottleDAO bottleDAO;
 
+
+    @Override
+    public BottleDAO getDAO() {
+        return bottleDAO;
+    }
 }

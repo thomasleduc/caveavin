@@ -13,7 +13,7 @@ import java.util.Collection;
 import static javax.persistence.GenerationType.IDENTITY;
 
 /**
- * Created by macbookpro on 07/11/14.
+ * Created by leduc_t
  */
 @Entity
 @XmlRootElement
