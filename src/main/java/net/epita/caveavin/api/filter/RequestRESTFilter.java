@@ -10,6 +10,7 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -23,6 +24,10 @@ public class RequestRESTFilter implements ContainerRequestFilter {
     Authenticator authenticator;
 
     private final static Logger log = Logger.getLogger(RequestRESTFilter.class.getName());
+    private final static Set<String> PUBLIC_SERVICES = new HashSet<>(Arrays.asList(new String[] {
+            "/public/",
+            "/session/login",
+            "/session/register"}));
 
     @Override
     public void filter(ContainerRequestContext requestCtx) throws IOException {
@@ -40,14 +45,22 @@ public class RequestRESTFilter implements ContainerRequestFilter {
             return;
         }
 
-        // For any other methods besides login, the authToken must be verified
-        if (!path.startsWith("/session")) {
+        // For any other methods besides the public services, the authToken must be verified
+        if (!isPublic(path)) {
             String authToken = requestCtx.getHeaderString(CaveStrings.AUTH_TOKEN);
             // if it isn't valid, just kick them out.
             if (!authenticator.isAuthTokenValid(authToken)) {
                 requestCtx.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
         }
+    }
+
+    private Boolean isPublic(String path) {
+        for (String str : PUBLIC_SERVICES) {
+            if (path.startsWith(str)) return true;
+        }
+
+        return false;
     }
 }
 

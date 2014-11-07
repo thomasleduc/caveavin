@@ -16,14 +16,14 @@ unzip wildfly-8.1.0.Final.zip
 export WILDFLY_HOME=$FAVDIR/wildfly-8.1.0.Final
 ```
 
-####IntelliJ####
+#### IntelliJ ####
    - On Start up wizard, go to Configure, then Plugins, and search for Jbos integration. Make sure the plugins is enable.
    - Back to the start up wizard, go to preferences -> applications servers -> Add WildFly
    - Now you can git clone the project, open it and wait for maven resolving ...
    - Go to "Run/Debug Configuration", select the default domain, click fix (add the war to the build)
    - (Troubleshooting) if you have a problem after this step, it's probably because intelliJ language support configuration is low.
 
-### MySQL ###
+#### MySQL ####
 (Assuming you have a mysql server already running on port 3306)
 
 Make Mysql available for JBoss
