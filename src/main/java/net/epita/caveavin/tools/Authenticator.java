@@ -7,12 +7,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.security.GeneralSecurityException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.security.auth.login.LoginException;
 
 /**
  * Created by teboul_g
  */
+@Singleton
 public final class Authenticator {
     private static Authenticator authenticator = null;
     // An authentication token storage which stores <auth_token, username>.
@@ -21,15 +26,9 @@ public final class Authenticator {
     @Inject
     private UserBIZ userBIZ;
 
-    private Authenticator() {
-        // init the singleton here
-    }
+    @PostConstruct
+    private void init() {
 
-    public static Authenticator getInstance() {
-        if (authenticator == null) {
-            authenticator = new Authenticator();
-        }
-        return authenticator;
     }
 
     public String login(String username, String password) throws LoginException {
@@ -46,6 +45,7 @@ public final class Authenticator {
      * Check the parameter to registration, save the user and do a login
      **/
     public String register(String username, String password, String email) throws RegisterFailedException {
+        Logger.getLogger(Authenticator.class.getName()).log(Level.INFO, (userBIZ == null) ? "too bad" : "correctly injected");
         userBIZ.register(username, password, email); // possible throw of registerFailedException
 
         String authToken = UUID.randomUUID().toString();

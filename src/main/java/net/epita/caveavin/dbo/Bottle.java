@@ -29,11 +29,11 @@ public class Bottle extends AbstractDBO<Long> {
     @Getter @Setter
     private String name;
 
-    @Column
+    @Column(name="creation_date")
     @Getter @Setter
     private Date creationDate;
 
-    @Column
+    @Column(name="drunk_date")
     @Getter @Setter
     private Date drunkDate;
 
@@ -44,6 +44,10 @@ public class Bottle extends AbstractDBO<Long> {
     @Column
     @Getter @Setter
     private Integer color;
+
+    @Column
+    @Getter @Setter
+    private String stored;
 
     @Override
     public String asCSV() {

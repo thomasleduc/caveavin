@@ -2,6 +2,8 @@ package net.epita.caveavin.dbo;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -11,6 +13,10 @@ import java.util.List;
  */
 public abstract class AbstractDBO<K extends Comparable<K>>
         implements Serializable, Comparable<AbstractDBO<K>> {
+
+    public void Log(Level lvl, String msg) {
+        Logger.getLogger(getClass().getName()).log(lvl, msg);
+    }
 
     @Override
     public int compareTo(final AbstractDBO<K> o) {

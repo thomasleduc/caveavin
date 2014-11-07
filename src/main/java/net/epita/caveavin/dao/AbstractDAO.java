@@ -1,8 +1,10 @@
 package net.epita.caveavin.dao;
 
 import net.epita.caveavin.dbo.AbstractDBO;
-import net.epita.caveavin.dbo.User;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -11,6 +13,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The abstract class which defined the DAO level.
@@ -20,6 +24,10 @@ import java.util.Collection;
  */
 public abstract class AbstractDAO
         <T extends AbstractDBO<K>, K extends Comparable<K>> {
+
+    public void Log(Level lvl, String msg) {
+        Logger.getLogger(getClass().getName()).log(lvl, msg);
+    }
 
     /**
      * Create an entity manager and return it.
@@ -65,10 +73,9 @@ public abstract class AbstractDAO
      * Push the entity.
      * @param entity The entity to push.
      */
-    public void persist(final T entity) {
-        em.getTransaction().begin();
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void persist(final T entity) throws Exception {
         em.persist(entity);
-        em.getTransaction().commit();
     }
 
     public Long count() {
@@ -95,6 +102,10 @@ public abstract class AbstractDAO
         ParameterExpression<String> name = cb.parameter(String.class, key);
         q.where(cb.equal(c.get(key), name));
 
-        return getEntityManager().createQuery(q).setParameter(key, value).getSingleResult();
+        try {
+            return em.createQuery(q).setParameter(key, value).getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

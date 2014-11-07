@@ -30,7 +30,11 @@ public class Cellar extends AbstractDBO<Long>{
     @Getter @Setter
     private String name;
 
-    @OneToMany
+    @Column
+    @Getter @Setter
+    private String owner;
+
+    @OneToMany(mappedBy="stored")
     @Getter @Setter
     private Collection<Bottle> bottles;
 

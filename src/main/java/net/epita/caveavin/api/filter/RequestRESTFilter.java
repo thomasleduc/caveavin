@@ -3,6 +3,7 @@ package net.epita.caveavin.api.filter;
 import net.epita.caveavin.tools.Authenticator;
 import net.epita.caveavin.tools.CaveStrings;
 
+import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -17,6 +18,9 @@ import java.util.logging.Logger;
 @Provider
 @PreMatching
 public class RequestRESTFilter implements ContainerRequestFilter {
+
+    @Inject
+    Authenticator authenticator;
 
     private final static Logger log = Logger.getLogger(RequestRESTFilter.class.getName());
 
@@ -35,9 +39,6 @@ public class RequestRESTFilter implements ContainerRequestFilter {
             requestCtx.abortWith(Response.status(Response.Status.OK).build());
             return;
         }
-
-        // Then check is the service key exists and is valid.
-        Authenticator authenticator = Authenticator.getInstance();
 
         // For any other methods besides login, the authToken must be verified
         if (!path.startsWith("/session")) {

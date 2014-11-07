@@ -10,13 +10,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 import java.util.Collection;
+import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
 /**
- * Created by macbookpro on 07/11/14.
+ * Created by leduc_t
  */
 @Entity
+@Table(name="causer")
 @XmlRootElement
 @AllArgsConstructor @NoArgsConstructor
 public class User extends AbstractDBO<Long> {
@@ -38,7 +40,12 @@ public class User extends AbstractDBO<Long> {
     @Getter @Setter
     private String email;
 
-    @OneToMany
+    @Column(name="creation_date")
+    @Getter @Setter
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate;
+
+    @OneToMany(mappedBy="owner")
     @Getter @Setter
     private Collection<Cellar> cellars;
 

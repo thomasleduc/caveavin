@@ -17,6 +17,8 @@ import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The Business class of ser.
@@ -60,7 +62,6 @@ public class UserBIZ extends AbstractBIZ<UserDAO, User, Long> {
      * @throws RegisterFailedException throw the exception if a unique constrains is broken
      */
     public User register(String username, String password, String email) throws RegisterFailedException {
-
         if (findWithEmail(email) != null) {
             throw new RegisterFailedException(CaveStrings.REGISTER_FAILED_EMAIL);
         }
@@ -69,16 +70,16 @@ public class UserBIZ extends AbstractBIZ<UserDAO, User, Long> {
             throw new RegisterFailedException(CaveStrings.REGISTER_FAILED_USERNAME);
         }
 
-        // if no unique constrains are broken try to add the user
-        User newUser = new User(null, username, encryptPassword(password), email, new ArrayList<Cellar>());
+        // If no unique constrains are broken try to add the user
+        User newUser = new User(null, username, encryptPassword(password), email, null, new ArrayList<>());
 
         try {
             persist(newUser);
+            return newUser;
         } catch (Exception sqlEx) {
+            Logger.getLogger(UserBIZ.class.getName()).log(Level.SEVERE, sqlEx.getMessage());
             throw new RegisterFailedException(CaveStrings.REGISTER_FAILED_SQL);
         }
-
-        return newUser;
     }
 
     /**

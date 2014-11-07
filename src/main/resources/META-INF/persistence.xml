@@ -10,10 +10,6 @@
     <persistence-unit name="cav-pu" transaction-type="JTA">
         <jta-data-source>java:/jdbc/CavDS</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <properties>
-            <!-- Properties for Hibernate -->
-            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-            <property name="hibernate.show_sql" value="false" />
-        </properties>
+        <properties/>
     </persistence-unit>
 </persistence>

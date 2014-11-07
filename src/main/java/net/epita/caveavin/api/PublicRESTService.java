@@ -31,7 +31,7 @@ public class PublicRESTService extends AbstractRESTService{
     @GET
     @Path("stats")
     @Produces(MediaType.APPLICATION_JSON)
-    private Response statistic() {
+    public Response statistic() {
         JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
 
         jsonObjBuilder.add("nb_user_created", userBIZ.count());

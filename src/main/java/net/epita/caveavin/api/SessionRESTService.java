@@ -2,7 +2,9 @@ package net.epita.caveavin.api;
 
 import net.epita.caveavin.tools.Authenticator;
 import net.epita.caveavin.tools.CaveStrings;
+import net.epita.caveavin.tools.exception.RegisterFailedException;
 
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -14,6 +16,9 @@ import java.security.GeneralSecurityException;
 @Path("/session")
 public class SessionRESTService extends AbstractRESTService {
 
+    @Inject
+    Authenticator authenticator;
+
     @POST
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
@@ -21,8 +26,6 @@ public class SessionRESTService extends AbstractRESTService {
             @Context HttpHeaders httpHeaders,
             @FormParam("username") String username,
             @FormParam("password") String password) {
-
-        Authenticator authenticator = Authenticator.getInstance();
 
         try {
             String authToken = authenticator.login(username, password);
@@ -65,7 +68,6 @@ public class SessionRESTService extends AbstractRESTService {
     public Response logout(
             @Context HttpHeaders httpHeaders) {
         try {
-            Authenticator authenticator = Authenticator.getInstance();
             String authToken = httpHeaders.getHeaderString(CaveStrings.AUTH_TOKEN);
             authenticator.logout(authToken);
 
@@ -83,14 +85,18 @@ public class SessionRESTService extends AbstractRESTService {
             @FormParam("username") String username,
             @FormParam("password") String password,
             @FormParam("email") String email) {
-        try {
-            Authenticator authenticator = Authenticator.getInstance();
-            String authToken = httpHeaders.getHeaderString(CaveStrings.AUTH_TOKEN);
-            authenticator.logout(authToken);
 
-            return getNoCacheResponseBuilder(Response.Status.NO_CONTENT).build();
-        } catch (final GeneralSecurityException ex) {
-            return getNoCacheResponseBuilder(Response.Status.INTERNAL_SERVER_ERROR).build();
+        try {
+            String authToken = authenticator.register(username, password, email);
+            JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+            jsonObjBuilder.add(CaveStrings.AUTH_TOKEN, authToken);
+            JsonObject jsonObj = jsonObjBuilder.build();
+            return getNoCacheResponseBuilder(Response.Status.OK).entity(jsonObj.toString()).build();
+        } catch (RegisterFailedException e) {
+            JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+            jsonObjBuilder.add("message", e.getMessage());
+            JsonObject jsonObj = jsonObjBuilder.build();
+            return getNoCacheResponseBuilder(Response.Status.UNAUTHORIZED).entity(jsonObj.toString()).build();
         }
     }
 }
