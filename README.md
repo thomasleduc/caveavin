@@ -83,7 +83,7 @@ exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLEx
 /public/stats               GET                             -> nb_cellar nb_bottle
 /session/register           POST username password email    -> auth_token
 ```
-## Authorized : ###
+### Authorized : ###
 ```
 /session/logout             POST                            -> OK
 /session/password           UPDATE password new_password    -> OK
