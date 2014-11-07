@@ -1,20 +1,15 @@
 package net.epita.caveavin.biz;
 
 import net.epita.caveavin.dao.UserDAO;
-import net.epita.caveavin.dbo.Cellar;
 import net.epita.caveavin.dbo.User;
 import net.epita.caveavin.tools.CaveStrings;
+import net.epita.caveavin.tools.OWASP;
 import net.epita.caveavin.tools.exception.RegisterFailedException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.DigestInputStream;
-import java.security.DigestOutputStream;
-import java.security.MessageDigest;
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -98,28 +93,10 @@ public class UserBIZ extends AbstractBIZ<UserDAO, User, Long> {
      */
     private String encryptPassword(String password) {
 
-        password = password.concat(CaveStrings.SALT_PASSWORD);
-
         try {
-            MessageDigest hash = MessageDigest.getInstance("SHA1");
-
-            ByteArrayInputStream bIn = new ByteArrayInputStream(password.getBytes());
-            DigestInputStream dIn = new DigestInputStream(bIn, hash);
-            ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-
-            int ch;
-            while ((ch = dIn.read()) >= 0) {
-                bOut.write(ch);
-            }
-            byte[] newInput = bOut.toByteArray();
-
-            DigestOutputStream dOut = new DigestOutputStream(new ByteArrayOutputStream(), hash);
-            dOut.write(newInput);
-            dOut.close();
-
-            return new String(dOut.getMessageDigest().digest());
-        } catch (NoSuchAlgorithmException|IOException nsae) {
-            // this is not gonna happen ...
+            return OWASP.byteToBase64(OWASP.getHash(password, CaveStrings.SALT_PASSWORD.getBytes()));
+        } catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
+            // Never happen
             return "";
         }
     }
